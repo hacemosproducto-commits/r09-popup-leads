@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>R-09 · Pop-up de asignación de leads — Mid-fi v2</title>
+<style>
+  :root {
+    --primary: #F47C5D;
+    --primary-hover: #E76A4B;
+    --primary-soft: #FCE3DA;
+    --primary-text: #C44A2A;
+    --text-strong: #1F2937;
+    --text-body: #374151;
+    --text-muted: #6B7280;
+    --text-subtle: #9CA3AF;
+    --bg-page: #F4F5F7;
+    --bg-card: #FFFFFF;
+    --bg-tab: #F1F2F4;
+    --bg-tab-active: #FFFFFF;
+    --border: #E5E7EB;
+    --border-strong: #D1D5DB;
+    --danger: #DC2626;
+    --backdrop: rgba(15, 23, 42, 0.55);
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 10px;
+    --shadow-dialog: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: var(--font);
+    background: var(--bg-page);
+    color: var(--text-body);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  .page-hint {
+    max-width: 1280px;
+    margin: 24px auto 8px;
+    padding: 0 24px;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+  .page-hint strong { color: var(--text-strong); }
+
+  .stage {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px 48px;
+  }
+
+  .backdrop {
+    position: relative;
+    background: var(--backdrop);
+    border-radius: 12px;
+    padding: 40px 0;
+    min-height: 200px;
+  }
+
+  /* === Dialog === */
+  .dialog {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-dialog);
+    width: 760px;
+    max-width: calc(100% - 48px);
+    margin: 0 auto;
+    overflow: hidden;
+  }
+  .dialog.dialog-narrow {
+    width: 540px;
+  }
+
+  .dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 24px 14px;
+  }
+  .dialog-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-strong);
+    margin: 0;
+  }
+  .dialog-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    padding: 4px;
+  }
+
+  .dialog-body {
+    padding: 4px 24px 20px;
+  }
+
+  /* === Country status line (pop-up agente) === */
+  .country-status {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin: 0 0 18px;
+  }
+  .country-status strong {
+    color: var(--text-strong);
+    font-weight: 600;
+  }
+
+  /* === Context card (pop-up agente: país no editable) === */
+  .context-card-wrapper {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .context-card {
+    display: inline-block;
+    background: var(--bg-tab-active);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 10px 24px;
+    min-width: 160px;
+    text-align: center;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  }
+  .context-card-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-strong);
+  }
+  .context-card-count {
+    font-size: 12px;
+    color: var(--text-subtle);
+    margin-top: 2px;
+  }
+  .context-intro {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin: 0 0 16px;
+    text-align: center;
+  }
+
+  /* === Field label === */
+  .field-label {
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 400;
+    margin: 0 0 8px;
+  }
+
+  /* === Country tabs (PrimeVue SelectButton) === */
+  .country-tabs {
+    display: flex;
+    background: var(--bg-tab);
+    border-radius: var(--radius-md);
+    padding: 4px;
+    margin-bottom: 20px;
+    width: fit-content;
+  }
+  .country-tab {
+    flex: 0 0 auto;
+    padding: 10px 24px;
+    border-radius: var(--radius-sm);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    min-width: 160px;
+  }
+  .country-tab.active {
+    background: var(--bg-tab-active);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  .country-tab-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-strong);
+  }
+  .country-tab:not(.active) .country-tab-name { color: var(--text-muted); font-weight: 500; }
+  .country-tab-count {
+    font-size: 12px;
+    color: var(--text-subtle);
+    margin-top: 2px;
+  }
+
+  /* === Section === */
+  .section {
+    margin-bottom: 20px;
+  }
+  .section-title {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin: 0 0 8px;
+  }
+
+  /* === Boxed list === */
+  .boxed-list {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 14px 16px 12px;
+    background: var(--bg-card);
+  }
+  .boxed-list-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 24px;
+  }
+  .boxed-list-subtitle {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 0 0 8px;
+    grid-column: span 1;
+  }
+  .boxed-list-actions {
+    margin-top: 12px;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 0;
+    cursor: pointer;
+  }
+  .checkbox-row input[type="checkbox"] {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+    position: relative;
+    background: white;
+  }
+  .checkbox-row input[type="checkbox"]:checked {
+    background: var(--primary);
+    border-color: var(--primary);
+  }
+  .checkbox-row input[type="checkbox"]:checked::after {
+    content: "✓";
+    position: absolute;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .checkbox-row label {
+    color: var(--text-body);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  /* === Buttons === */
+  .btn {
+    padding: 9px 16px;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    transition: background 0.15s ease;
+    font-family: var(--font);
+  }
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+  }
+  .btn-primary:hover { background: var(--primary-hover); }
+  .btn-primary-soft {
+    background: var(--primary-soft);
+    color: var(--primary-text);
+    font-weight: 600;
+  }
+  .btn-primary-soft:hover { background: #F8D5C7; }
+  .btn-secondary {
+    background: white;
+    color: var(--text-body);
+    border: 1px solid var(--border-strong);
+  }
+  .btn-secondary:hover { background: #F9FAFB; }
+  .btn-disabled {
+    background: #F3D5C7;
+    color: white;
+    cursor: not-allowed;
+    opacity: 0.85;
+  }
+  .btn-small {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  /* Paper plane icon (PrimeVue pi-send) approximation */
+  .icon-send {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    background: currentColor;
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M2.01 21L23 12 2.01 3 2 10l15 2-15 2z'/></svg>") no-repeat center;
+            mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M2.01 21L23 12 2.01 3 2 10l15 2-15 2z'/></svg>") no-repeat center;
+    -webkit-mask-size: contain;
+            mask-size: contain;
+  }
+  .icon-x {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background: currentColor;
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/></svg>") no-repeat center;
+            mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/></svg>") no-repeat center;
+    -webkit-mask-size: contain;
+            mask-size: contain;
+  }
+
+  /* === InputNumber === */
+  .input-wrapper {
+    position: relative;
+    display: block;
+  }
+  .input-number {
+    width: 100%;
+    padding: 11px 36px 11px 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    font-size: 15px;
+    font-family: var(--font);
+    color: var(--text-strong);
+    background: white;
+  }
+  .input-number:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(244, 124, 93, 0.15);
+  }
+  .input-number.error {
+    border-color: var(--danger);
+  }
+  .input-spinners {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .input-spinners span {
+    color: var(--text-muted);
+    font-size: 9px;
+    line-height: 1;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .helper-text {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .error-text {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--danger);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .empty-state {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 24px 16px;
+    font-size: 13px;
+    font-style: italic;
+  }
+
+  .dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 24px 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* === Toast === */
+  .toast {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: white;
+    border-left: 4px solid #16A34A;
+    padding: 14px 18px;
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    width: 320px;
+  }
+  .toast-icon {
+    background: #DCFCE7;
+    color: #16A34A;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .toast-title {
+    font-weight: 600;
+    color: var(--text-strong);
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+  .toast-body {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  /* === State labels === */
+  .state-label {
+    max-width: 760px;
+    margin: 48px auto 16px;
+    padding: 0 4px;
+    color: var(--text-muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+  }
+  .state-label:first-of-type { margin-top: 24px; }
+  .state-label .state-num {
+    background: var(--primary);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-right: 8px;
+    font-size: 11px;
+  }
+  .state-desc {
+    color: var(--text-muted);
+    font-size: 13px;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+    margin-top: 4px;
+  }
+
+  /* === Group divider === */
+  .group-divider {
+    max-width: 760px;
+    margin: 56px auto 0;
+    padding: 16px 20px;
+    background: white;
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--primary);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .group-divider h2 {
+    margin: 0 0 4px;
+    font-size: 16px;
+    color: var(--text-strong);
+  }
+  .group-divider p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+</style>
+</head>
+<body>
+
+<div class="page-hint">
+  <strong>R-09 — Pop-up de asignación de leads.</strong> Mid-fi v2 con iteración aplicada: CTAs dentro de la caja, icono "send", tipografía afinada y nuevo flujo desde detalle de agente.
+</div>
+
+<div class="stage">
+
+  <!-- ============================================================ -->
+  <!-- GRUPO A — POP-UP DESDE "MI EQUIPO" (FLUJO PRINCIPAL R-09) -->
+  <!-- ============================================================ -->
+  <div class="group-divider">
+    <h2>Flujo principal — Pop-up desde "Mi equipo"</h2>
+    <p>Acceso: Mi equipo → botón "Asignar leads". Reparto global por país.</p>
+  </div>
+
+  <!-- ESTADO 1 -->
+  <div class="state-label">
+    <span class="state-num">A1</span> Estado inicial al abrir el pop-up
+    <div class="state-desc">España preseleccionada, motivos y agentes vacíos, cantidad = 0, "Asignar" deshabilitado.</div>
+  </div>
+
+  <div class="backdrop">
+    <div class="dialog">
+      <div class="dialog-header">
+        <h3 class="dialog-title">Asignación de leads</h3>
+        <button class="dialog-close" aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="dialog-body">
+        <p class="field-label">País:</p>
+        <div class="country-tabs">
+          <div class="country-tab active">
+            <div class="country-tab-name">España</div>
+            <div class="country-tab-count">1.524 disponibles</div>
+          </div>
+          <div class="country-tab">
+            <div class="country-tab-name">Italia</div>
+            <div class="country-tab-count">312 disponibles</div>
+          </div>
+          <div class="country-tab">
+            <div class="country-tab-name">Francia</div>
+            <div class="country-tab-count">186 disponibles</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <p class="section-title">Motivos de pausa:</p>
+          <div class="boxed-list">
+            <div class="boxed-list-columns">
+              <p class="boxed-list-subtitle">General</p>
+              <p class="boxed-list-subtitle">Nutri</p>
+              <div class="checkbox-row"><input type="checkbox" id="m1"><label for="m1">El precio es demasiado alto</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="m7"><label for="m7">No le ha gustado Dogfy Diet</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="m2"><label for="m2">No tengo espacio en el congelador</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="m8"><label for="m8">No se come toda la ración, me sobra comida</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="m3"><label for="m3">Me voy de vacaciones</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="m9"><label for="m9">Le ha sentado mal Dogfy Diet (vómitos, diarreas...)</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="m4"><label for="m4">El contenido de mi pedido no era correcto</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="m10"><label for="m10">Quiero combinar Dogfy Diet con otra comida</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="m5"><label for="m5">Mi pedido ha llegado con retraso</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="m11"><label for="m11">Recetado de por vida una comida especial</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="m6"><label for="m6">Mi pedido ha llegado descongelado</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="m12"><label for="m12">Recetado temporalmente una comida especial</label></div>
+            </div>
+            <div class="boxed-list-actions">
+              <button class="btn btn-primary-soft btn-small">Seleccionar todos</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <p class="field-label">Cantidad por agente:</p>
+          <div class="input-wrapper">
+            <input type="text" class="input-number" value="0">
+            <div class="input-spinners"><span>▲</span><span>▼</span></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <p class="section-title">Agentes:</p>
+          <div class="boxed-list">
+            <div class="boxed-list-columns">
+              <div class="checkbox-row"><input type="checkbox" id="a1"><label for="a1">Antonio Garcia</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a2"><label for="a2">Carlos García</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a3"><label for="a3">Cata D'Amato</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a4"><label for="a4">Juan Jose Salgado</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a5"><label for="a5">Marc Postils</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a6"><label for="a6">Miguel Gimenez</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a7"><label for="a7">Sergio Parra</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a8"><label for="a8">Sergio Sales</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a9"><label for="a9">Xavier Viguera</label></div>
+            </div>
+            <div class="boxed-list-actions">
+              <button class="btn btn-primary-soft btn-small">Seleccionar todos</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dialog-footer">
+        <button class="btn btn-secondary"><span class="icon-x"></span> Cancelar</button>
+        <button class="btn btn-disabled"><span class="icon-send"></span> Asignar</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ESTADO 2 -->
+  <div class="state-label">
+    <span class="state-num">A2</span> Estado válido (ES) — Nutri filtrado
+    <div class="state-desc">3 motivos Nutri seleccionados, 2 agentes especializados, cantidad válida. Línea helper visible. "Asignar" habilitado.</div>
+  </div>
+
+  <div class="backdrop">
+    <div class="dialog">
+      <div class="dialog-header">
+        <h3 class="dialog-title">Asignación de leads</h3>
+        <button class="dialog-close" aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="dialog-body">
+        <p class="field-label">País:</p>
+        <div class="country-tabs">
+          <div class="country-tab active">
+            <div class="country-tab-name">España</div>
+            <div class="country-tab-count">1.524 disponibles</div>
+          </div>
+          <div class="country-tab">
+            <div class="country-tab-name">Italia</div>
+            <div class="country-tab-count">312 disponibles</div>
+          </div>
+          <div class="country-tab">
+            <div class="country-tab-name">Francia</div>
+            <div class="country-tab-count">186 disponibles</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <p class="section-title">Motivos de pausa:</p>
+          <div class="boxed-list">
+            <div class="boxed-list-columns">
+              <p class="boxed-list-subtitle">General</p>
+              <p class="boxed-list-subtitle">Nutri</p>
+              <div class="checkbox-row"><input type="checkbox" id="m1b"><label for="m1b">El precio es demasiado alto</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="m7b" checked><label for="m7b">No le ha gustado Dogfy Diet</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="m2b"><label for="m2b">No tengo espacio en el congelador</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="m8b" checked><label for="m8b">No se come toda la ración, me sobra comida</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="m3b"><label for="m3b">Me voy de vacaciones</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="m9b" checked><label for="m9b">Le ha sentado mal Dogfy Diet (vómitos, diarreas...)</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="m4b"><label for="m4b">El contenido de mi pedido no era correcto</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="m10b"><label for="m10b">Quiero combinar Dogfy Diet con otra comida</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="m5b"><label for="m5b">Mi pedido ha llegado con retraso</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="m11b"><label for="m11b">Recetado de por vida una comida especial</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="m6b"><label for="m6b">Mi pedido ha llegado descongelado</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="m12b"><label for="m12b">Recetado temporalmente una comida especial</label></div>
+            </div>
+            <div class="boxed-list-actions">
+              <button class="btn btn-primary-soft btn-small">Deseleccionar todos</button>
+            </div>
+          </div>
+          <p class="helper-text">Disponibles según motivos seleccionados: <strong style="color: var(--text-strong)">218</strong></p>
+        </div>
+
+        <div class="section">
+          <p class="field-label">Cantidad por agente:</p>
+          <div class="input-wrapper">
+            <input type="text" class="input-number" value="30">
+            <div class="input-spinners"><span>▲</span><span>▼</span></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <p class="section-title">Agentes:</p>
+          <div class="boxed-list">
+            <div class="boxed-list-columns">
+              <div class="checkbox-row"><input type="checkbox" id="a1b"><label for="a1b">Antonio Garcia</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a2b"><label for="a2b">Carlos García</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a3b" checked><label for="a3b">Cata D'Amato</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a4b"><label for="a4b">Juan Jose Salgado</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a5b"><label for="a5b">Marc Postils</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a6b" checked><label for="a6b">Miguel Gimenez</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a7b"><label for="a7b">Sergio Parra</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a8b"><label for="a8b">Sergio Sales</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a9b"><label for="a9b">Xavier Viguera</label></div>
+            </div>
+            <div class="boxed-list-actions">
+              <button class="btn btn-primary-soft btn-small">Deseleccionar todos</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dialog-footer">
+        <button class="btn btn-secondary"><span class="icon-x"></span> Cancelar</button>
+        <button class="btn btn-primary"><span class="icon-send"></span> Asignar</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ESTADO 3 -->
+  <div class="state-label">
+    <span class="state-num">A3</span> Error de validación de cantidad
+    <div class="state-desc">El TL introduce 120 leads/agente pero el máximo permitido es 50 (cap por agente). Mensaje en rojo. "Asignar" deshabilitado.</div>
+  </div>
+
+  <div class="backdrop">
+    <div class="dialog">
+      <div class="dialog-header">
+        <h3 class="dialog-title">Asignación de leads</h3>
+        <button class="dialog-close" aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="dialog-body">
+        <p class="field-label">País:</p>
+        <div class="country-tabs">
+          <div class="country-tab">
+            <div class="country-tab-name">España</div>
+            <div class="country-tab-count">1.524 disponibles</div>
+          </div>
+          <div class="country-tab active">
+            <div class="country-tab-name">Italia</div>
+            <div class="country-tab-count">312 disponibles</div>
+          </div>
+          <div class="country-tab">
+            <div class="country-tab-name">Francia</div>
+            <div class="country-tab-count">186 disponibles</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <p class="field-label">Cantidad por agente:</p>
+          <div class="input-wrapper">
+            <input type="text" class="input-number error" value="120">
+            <div class="input-spinners"><span>▲</span><span>▼</span></div>
+          </div>
+          <p class="error-text">* El máximo permitido por agente es 50</p>
+        </div>
+
+        <div class="section">
+          <p class="section-title">Agentes:</p>
+          <div class="boxed-list">
+            <div class="boxed-list-columns">
+              <div class="checkbox-row"><input type="checkbox" id="a1c" checked><label for="a1c">Antonio Garcia</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a2c" checked><label for="a2c">Carlos García</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a3c" checked><label for="a3c">Giulia Romano</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a4c"><label for="a4c">Marco Bianchi</label></div>
+            </div>
+            <div class="boxed-list-actions">
+              <button class="btn btn-primary-soft btn-small">Deseleccionar todos</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dialog-footer">
+        <button class="btn btn-secondary"><span class="icon-x"></span> Cancelar</button>
+        <button class="btn btn-disabled"><span class="icon-send"></span> Asignar</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ESTADO 4 -->
+  <div class="state-label">
+    <span class="state-num">A4</span> País sin sección de motivos (Italia)
+    <div class="state-desc">IT/FR: no aparece sección de motivos, solo agentes.</div>
+  </div>
+
+  <div class="backdrop">
+    <div class="dialog">
+      <div class="dialog-header">
+        <h3 class="dialog-title">Asignación de leads</h3>
+        <button class="dialog-close" aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="dialog-body">
+        <p class="field-label">País:</p>
+        <div class="country-tabs">
+          <div class="country-tab">
+            <div class="country-tab-name">España</div>
+            <div class="country-tab-count">1.524 disponibles</div>
+          </div>
+          <div class="country-tab active">
+            <div class="country-tab-name">Italia</div>
+            <div class="country-tab-count">312 disponibles</div>
+          </div>
+          <div class="country-tab">
+            <div class="country-tab-name">Francia</div>
+            <div class="country-tab-count">186 disponibles</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <p class="field-label">Cantidad por agente:</p>
+          <div class="input-wrapper">
+            <input type="text" class="input-number" value="40">
+            <div class="input-spinners"><span>▲</span><span>▼</span></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <p class="section-title">Agentes:</p>
+          <div class="boxed-list">
+            <div class="boxed-list-columns">
+              <div class="checkbox-row"><input type="checkbox" id="a1d" checked><label for="a1d">Antonio Garcia</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a2d" checked><label for="a2d">Carlos García</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a3d" checked><label for="a3d">Giulia Romano</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a4d"><label for="a4d">Marco Bianchi</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a5d"><label for="a5d">Sofia Russo</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a6d"><label for="a6d">Luca Ferrari</label></div>
+            </div>
+            <div class="boxed-list-actions">
+              <button class="btn btn-primary-soft btn-small">Deseleccionar todos</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dialog-footer">
+        <button class="btn btn-secondary"><span class="icon-x"></span> Cancelar</button>
+        <button class="btn btn-primary"><span class="icon-send"></span> Asignar</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ESTADO 5 -->
+  <div class="state-label">
+    <span class="state-num">A5</span> País sin leads disponibles
+    <div class="state-desc">0 leads. Input y botón "Asignar" deshabilitados.</div>
+  </div>
+
+  <div class="backdrop">
+    <div class="dialog">
+      <div class="dialog-header">
+        <h3 class="dialog-title">Asignación de leads</h3>
+        <button class="dialog-close" aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="dialog-body">
+        <p class="field-label">País:</p>
+        <div class="country-tabs">
+          <div class="country-tab">
+            <div class="country-tab-name">España</div>
+            <div class="country-tab-count">1.524 disponibles</div>
+          </div>
+          <div class="country-tab">
+            <div class="country-tab-name">Italia</div>
+            <div class="country-tab-count">312 disponibles</div>
+          </div>
+          <div class="country-tab active">
+            <div class="country-tab-name">Francia</div>
+            <div class="country-tab-count">0 disponibles</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <p class="field-label">Cantidad por agente:</p>
+          <div class="input-wrapper">
+            <input type="text" class="input-number" value="0" disabled style="background:#F9FAFB; color: var(--text-subtle); cursor: not-allowed;">
+            <div class="input-spinners" style="opacity:.4"><span>▲</span><span>▼</span></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <p class="section-title">Agentes:</p>
+          <div class="boxed-list">
+            <div class="boxed-list-columns">
+              <div class="checkbox-row"><input type="checkbox" id="a1e" disabled><label for="a1e" style="color: var(--text-subtle)">Camille Dubois</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="a2e" disabled><label for="a2e" style="color: var(--text-subtle)">Léa Martin</label></div>
+            </div>
+            <div class="boxed-list-actions">
+              <button class="btn btn-primary-soft btn-small" style="opacity:.5; cursor:not-allowed">Seleccionar todos</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dialog-footer">
+        <button class="btn btn-secondary"><span class="icon-x"></span> Cancelar</button>
+        <button class="btn btn-disabled"><span class="icon-send"></span> Asignar</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ESTADO 6 -->
+  <div class="state-label">
+    <span class="state-num">A6</span> País sin agentes asignados
+    <div class="state-desc">Bloque agentes con empty state. "Asignar" deshabilitado.</div>
+  </div>
+
+  <div class="backdrop">
+    <div class="dialog">
+      <div class="dialog-header">
+        <h3 class="dialog-title">Asignación de leads</h3>
+        <button class="dialog-close" aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="dialog-body">
+        <p class="field-label">País:</p>
+        <div class="country-tabs">
+          <div class="country-tab">
+            <div class="country-tab-name">España</div>
+            <div class="country-tab-count">1.524 disponibles</div>
+          </div>
+          <div class="country-tab">
+            <div class="country-tab-name">Italia</div>
+            <div class="country-tab-count">312 disponibles</div>
+          </div>
+          <div class="country-tab active">
+            <div class="country-tab-name">Francia</div>
+            <div class="country-tab-count">186 disponibles</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <p class="field-label">Cantidad por agente:</p>
+          <div class="input-wrapper">
+            <input type="text" class="input-number" value="0">
+            <div class="input-spinners"><span>▲</span><span>▼</span></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <p class="section-title">Agentes:</p>
+          <div class="boxed-list">
+            <div class="empty-state">No hay agentes asignados a este país</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dialog-footer">
+        <button class="btn btn-secondary"><span class="icon-x"></span> Cancelar</button>
+        <button class="btn btn-disabled"><span class="icon-send"></span> Asignar</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============================================================ -->
+  <!-- GRUPO B — POP-UP DESDE DETALLE DE AGENTE -->
+  <!-- ============================================================ -->
+  <div class="group-divider">
+    <h2>Flujo secundario — Pop-up desde detalle de agente</h2>
+    <p>Acceso: Mi equipo → click en agente → botón "Asignar leads". Asignación individual al agente abierto, manteniendo el filtrado por motivos en el caso de España.</p>
+  </div>
+
+  <!-- ESTADO B1 -->
+  <div class="state-label">
+    <span class="state-num">B1</span> Detalle de agente español (ES)
+    <div class="state-desc">Pop-up incluye sección de motivos para que el TL/admin pueda filtrar (ej. solo asignar Nutri a este agente especializado). Cabecera muestra el país del agente y el total disponible en ese país.</div>
+  </div>
+
+  <div class="backdrop">
+    <div class="dialog">
+      <div class="dialog-header">
+        <h3 class="dialog-title">Asignar leads</h3>
+        <button class="dialog-close" aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="dialog-body">
+        <p class="context-intro">Indica el número de leads que deseas asignar al agente.</p>
+        <div class="context-card-wrapper">
+          <div class="context-card">
+            <div class="context-card-name">España</div>
+            <div class="context-card-count">1.524 disponibles</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <p class="section-title">Motivos de pausa:</p>
+          <div class="boxed-list">
+            <div class="boxed-list-columns">
+              <p class="boxed-list-subtitle">General</p>
+              <p class="boxed-list-subtitle">Nutri</p>
+              <div class="checkbox-row"><input type="checkbox" id="bm1"><label for="bm1">El precio es demasiado alto</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="bm7" checked><label for="bm7">No le ha gustado Dogfy Diet</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="bm2"><label for="bm2">No tengo espacio en el congelador</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="bm8" checked><label for="bm8">No se come toda la ración, me sobra comida</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="bm3"><label for="bm3">Me voy de vacaciones</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="bm9" checked><label for="bm9">Le ha sentado mal Dogfy Diet (vómitos, diarreas...)</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="bm4"><label for="bm4">El contenido de mi pedido no era correcto</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="bm10" checked><label for="bm10">Quiero combinar Dogfy Diet con otra comida</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="bm5"><label for="bm5">Mi pedido ha llegado con retraso</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="bm11" checked><label for="bm11">Recetado de por vida una comida especial</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="bm6"><label for="bm6">Mi pedido ha llegado descongelado</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="bm12" checked><label for="bm12">Recetado temporalmente una comida especial</label></div>
+            </div>
+            <div class="boxed-list-actions">
+              <button class="btn btn-primary-soft btn-small">Deseleccionar todos</button>
+            </div>
+          </div>
+          <p class="helper-text">Disponibles según motivos seleccionados: <strong style="color: var(--text-strong)">218</strong></p>
+        </div>
+
+        <div class="section">
+          <p class="field-label">Cantidad de leads:</p>
+          <div class="input-wrapper">
+            <input type="text" class="input-number" value="25">
+            <div class="input-spinners"><span>▲</span><span>▼</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dialog-footer">
+        <button class="btn btn-secondary"><span class="icon-x"></span> Cancelar</button>
+        <button class="btn btn-primary"><span class="icon-send"></span> Asignar</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ESTADO B2 -->
+  <div class="state-label">
+    <span class="state-num">B2</span> Detalle de agente italiano o francés (IT/FR)
+    <div class="state-desc">Comportamiento equivalente al actual: solo input numérico, sin sección de motivos. Cabecera muestra el país del agente y el total disponible.</div>
+  </div>
+
+  <div class="backdrop">
+    <div class="dialog">
+      <div class="dialog dialog-narrow">
+        <div class="dialog-header">
+          <h3 class="dialog-title">Asignar leads</h3>
+          <button class="dialog-close" aria-label="Cerrar">✕</button>
+        </div>
+
+        <div class="dialog-body">
+          <p class="context-intro">Indica el número de leads que deseas asignar al agente.</p>
+          <div class="context-card-wrapper">
+            <div class="context-card">
+              <div class="context-card-name">Italia</div>
+              <div class="context-card-count">312 disponibles</div>
+            </div>
+          </div>
+
+          <div class="section">
+            <p class="field-label">Cantidad de leads:</p>
+            <div class="input-wrapper">
+              <input type="text" class="input-number" value="10">
+              <div class="input-spinners"><span>▲</span><span>▼</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dialog-footer">
+          <button class="btn btn-secondary"><span class="icon-x"></span> Cancelar</button>
+          <button class="btn btn-primary"><span class="icon-send"></span> Asignar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============================================================ -->
+  <!-- TOAST -->
+  <!-- ============================================================ -->
+  <div class="state-label">
+    <span class="state-num">✓</span> Confirmación tras asignación
+    <div class="state-desc">PrimeVue Toast en esquina superior derecha tras pulsar "Asignar". Aplica a ambos flujos.</div>
+  </div>
+
+  <div class="backdrop" style="background: var(--bg-page); min-height: 120px; padding: 20px 0;">
+    <div class="toast">
+      <div class="toast-icon">✓</div>
+      <div>
+        <div class="toast-title">Leads asignados correctamente</div>
+        <div class="toast-body">Se han asignado 60 leads entre 2 agentes de España.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
