@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>R-09 · Pop-up de asignación de leads — Mid-fi v2</title>
+<title>R-09 · Pop-up de asignación de leads — Mid-fi v6 (counter por categoría)</title>
 <style>
   :root {
     --primary: #F47C5D;
@@ -150,6 +150,9 @@
     font-size: 14px;
     font-weight: 400;
     margin: 0 0 8px;
+  }
+  .field-label.center {
+    text-align: center;
   }
 
   /* === Country tabs (PrimeVue SelectButton) === */
@@ -367,6 +370,70 @@
     user-select: none;
   }
 
+  /* === MultiSelect (PrimeVue MultiSelect) === */
+  .multiselect {
+    position: relative;
+  }
+  .multiselect-trigger {
+    width: 100%;
+    padding: 11px 36px 11px 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    font-size: 15px;
+    color: var(--text-subtle);
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font);
+    min-height: 44px;
+  }
+  .multiselect-chevron {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 11px;
+    pointer-events: none;
+  }
+  .multiselect-panel {
+    margin-top: 4px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: white;
+    box-shadow: 0 8px 16px -4px rgba(0,0,0,0.10), 0 4px 8px -4px rgba(0,0,0,0.06);
+    padding: 14px 16px 12px;
+  }
+
+  /* === Counter por categoría dentro del MultiSelect === */
+  .counter-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .cat-counter {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .cat-counter-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .cat-counter-value {
+    font-size: 15px;
+    color: var(--text-strong);
+    font-weight: 600;
+  }
+  .cat-counter-value.active { color: var(--primary); }
+  .cat-divider {
+    color: var(--border-strong);
+    font-size: 14px;
+  }
+
   .helper-text {
     margin-top: 6px;
     font-size: 12px;
@@ -489,7 +556,7 @@
 <body>
 
 <div class="page-hint">
-  <strong>R-09 — Pop-up de asignación de leads.</strong> Mid-fi v2 con iteración aplicada: CTAs dentro de la caja, icono "send", tipografía afinada y nuevo flujo desde detalle de agente.
+  <strong>R-09 — Pop-up de asignación de leads · Mid-fi v6.</strong> Iteración: los motivos seleccionados se muestran como counter por categoría dentro del campo (<em>General 0/6 · Nutri 3/6</em>). El naranja se aplica solo a los valores activos (&gt;0). Reduce altura del pop-up sin pills.
 </div>
 
 <div class="stage">
@@ -505,7 +572,7 @@
   <!-- ESTADO 1 -->
   <div class="state-label">
     <span class="state-num">A1</span> Estado inicial al abrir el pop-up
-    <div class="state-desc">España preseleccionada, motivos y agentes vacíos, cantidad = 0, "Asignar" deshabilitado.</div>
+    <div class="state-desc">España preseleccionada. Counter de motivos en "General 0/6 · Nutri 0/6" (ambos en gris, sin selección). Agentes vacíos. "Asignar" deshabilitado.</div>
   </div>
 
   <div class="backdrop">
@@ -516,7 +583,7 @@
       </div>
 
       <div class="dialog-body">
-        <p class="field-label">País:</p>
+        <p class="field-label center">País:</p>
         <div class="country-tabs">
           <div class="country-tab active">
             <div class="country-tab-name">España</div>
@@ -534,25 +601,20 @@
 
         <div class="section">
           <p class="section-title">Motivos de pausa:</p>
-          <div class="boxed-list">
-            <div class="boxed-list-columns">
-              <p class="boxed-list-subtitle">General</p>
-              <p class="boxed-list-subtitle">Nutri</p>
-              <div class="checkbox-row"><input type="checkbox" id="m1"><label for="m1">El precio es demasiado alto</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="m7"><label for="m7">No le ha gustado Dogfy Diet</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="m2"><label for="m2">No tengo espacio en el congelador</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="m8"><label for="m8">No se come toda la ración, me sobra comida</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="m3"><label for="m3">Me voy de vacaciones</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="m9"><label for="m9">Le ha sentado mal Dogfy Diet (vómitos, diarreas...)</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="m4"><label for="m4">El contenido de mi pedido no era correcto</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="m10"><label for="m10">Quiero combinar Dogfy Diet con otra comida</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="m5"><label for="m5">Mi pedido ha llegado con retraso</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="m11"><label for="m11">Recetado de por vida una comida especial</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="m6"><label for="m6">Mi pedido ha llegado descongelado</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="m12"><label for="m12">Recetado temporalmente una comida especial</label></div>
-            </div>
-            <div class="boxed-list-actions">
-              <button class="btn btn-primary-soft btn-small">Seleccionar todos</button>
+          <div class="multiselect">
+            <div class="multiselect-trigger">
+              <span class="counter-row">
+                <span class="cat-counter">
+                  <span class="cat-counter-label">General</span>
+                  <span class="cat-counter-value">0/6</span>
+                </span>
+                <span class="cat-divider">·</span>
+                <span class="cat-counter">
+                  <span class="cat-counter-label">Nutri</span>
+                  <span class="cat-counter-value">0/6</span>
+                </span>
+              </span>
+              <span class="multiselect-chevron">▼</span>
             </div>
           </div>
         </div>
@@ -597,7 +659,7 @@
   <!-- ESTADO 2 -->
   <div class="state-label">
     <span class="state-num">A2</span> Estado válido (ES) — Nutri filtrado
-    <div class="state-desc">3 motivos Nutri seleccionados, 2 agentes especializados, cantidad válida. Línea helper visible. "Asignar" habilitado.</div>
+    <div class="state-desc">3 motivos Nutri seleccionados (counter "0/6 · 3/6" con Nutri en naranja). 2 agentes seleccionados. Línea helper visible. "Asignar" habilitado.</div>
   </div>
 
   <div class="backdrop">
@@ -608,7 +670,7 @@
       </div>
 
       <div class="dialog-body">
-        <p class="field-label">País:</p>
+        <p class="field-label center">País:</p>
         <div class="country-tabs">
           <div class="country-tab active">
             <div class="country-tab-name">España</div>
@@ -626,25 +688,20 @@
 
         <div class="section">
           <p class="section-title">Motivos de pausa:</p>
-          <div class="boxed-list">
-            <div class="boxed-list-columns">
-              <p class="boxed-list-subtitle">General</p>
-              <p class="boxed-list-subtitle">Nutri</p>
-              <div class="checkbox-row"><input type="checkbox" id="m1b"><label for="m1b">El precio es demasiado alto</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="m7b" checked><label for="m7b">No le ha gustado Dogfy Diet</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="m2b"><label for="m2b">No tengo espacio en el congelador</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="m8b" checked><label for="m8b">No se come toda la ración, me sobra comida</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="m3b"><label for="m3b">Me voy de vacaciones</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="m9b" checked><label for="m9b">Le ha sentado mal Dogfy Diet (vómitos, diarreas...)</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="m4b"><label for="m4b">El contenido de mi pedido no era correcto</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="m10b"><label for="m10b">Quiero combinar Dogfy Diet con otra comida</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="m5b"><label for="m5b">Mi pedido ha llegado con retraso</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="m11b"><label for="m11b">Recetado de por vida una comida especial</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="m6b"><label for="m6b">Mi pedido ha llegado descongelado</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="m12b"><label for="m12b">Recetado temporalmente una comida especial</label></div>
-            </div>
-            <div class="boxed-list-actions">
-              <button class="btn btn-primary-soft btn-small">Deseleccionar todos</button>
+          <div class="multiselect">
+            <div class="multiselect-trigger">
+              <span class="counter-row">
+                <span class="cat-counter">
+                  <span class="cat-counter-label">General</span>
+                  <span class="cat-counter-value">0/6</span>
+                </span>
+                <span class="cat-divider">·</span>
+                <span class="cat-counter">
+                  <span class="cat-counter-label">Nutri</span>
+                  <span class="cat-counter-value active">3/6</span>
+                </span>
+              </span>
+              <span class="multiselect-chevron">▼</span>
             </div>
           </div>
           <p class="helper-text">Disponibles según motivos seleccionados: <strong style="color: var(--text-strong)">218</strong></p>
@@ -687,6 +744,203 @@
   </div>
 
 
+  <!-- ESTADO A2b — MultiSelect motivos abierto -->
+  <div class="state-label">
+    <span class="state-num">A2b</span> MultiSelect de motivos abierto
+    <div class="state-desc">El TL despliega el panel para revisar/modificar la selección. El panel mantiene la organización en dos columnas General / Nutri y el botón "Seleccionar/Deseleccionar todos" en la esquina inferior izquierda.</div>
+  </div>
+
+  <div class="backdrop">
+    <div class="dialog">
+      <div class="dialog-header">
+        <h3 class="dialog-title">Asignación de leads</h3>
+        <button class="dialog-close" aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="dialog-body">
+        <p class="field-label center">País:</p>
+        <div class="country-tabs">
+          <div class="country-tab active">
+            <div class="country-tab-name">España</div>
+            <div class="country-tab-count">1.524 disponibles</div>
+          </div>
+          <div class="country-tab">
+            <div class="country-tab-name">Italia</div>
+            <div class="country-tab-count">312 disponibles</div>
+          </div>
+          <div class="country-tab">
+            <div class="country-tab-name">Francia</div>
+            <div class="country-tab-count">186 disponibles</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <p class="section-title">Motivos de pausa:</p>
+          <div class="multiselect">
+            <div class="multiselect-trigger" style="border-color: var(--primary); box-shadow: 0 0 0 3px rgba(244, 124, 93, 0.15);">
+              <span class="counter-row">
+                <span class="cat-counter">
+                  <span class="cat-counter-label">General</span>
+                  <span class="cat-counter-value">0/6</span>
+                </span>
+                <span class="cat-divider">·</span>
+                <span class="cat-counter">
+                  <span class="cat-counter-label">Nutri</span>
+                  <span class="cat-counter-value active">3/6</span>
+                </span>
+              </span>
+              <span class="multiselect-chevron" style="transform: translateY(-50%) rotate(180deg);">▼</span>
+            </div>
+            <div class="multiselect-panel">
+              <div class="boxed-list-columns">
+                <p class="boxed-list-subtitle">General</p>
+                <p class="boxed-list-subtitle">Nutri</p>
+                <div class="checkbox-row"><input type="checkbox" id="ms1"><label for="ms1">El precio es demasiado alto</label></div>
+                <div class="checkbox-row"><input type="checkbox" id="ms7" checked><label for="ms7">No le ha gustado Dogfy Diet</label></div>
+                <div class="checkbox-row"><input type="checkbox" id="ms2"><label for="ms2">No tengo espacio en el congelador</label></div>
+                <div class="checkbox-row"><input type="checkbox" id="ms8" checked><label for="ms8">No se come toda la ración, me sobra comida</label></div>
+                <div class="checkbox-row"><input type="checkbox" id="ms3"><label for="ms3">Me voy de vacaciones</label></div>
+                <div class="checkbox-row"><input type="checkbox" id="ms9" checked><label for="ms9">Le ha sentado mal Dogfy Diet (vómitos, diarreas...)</label></div>
+                <div class="checkbox-row"><input type="checkbox" id="ms4"><label for="ms4">El contenido de mi pedido no era correcto</label></div>
+                <div class="checkbox-row"><input type="checkbox" id="ms10"><label for="ms10">Quiero combinar Dogfy Diet con otra comida</label></div>
+                <div class="checkbox-row"><input type="checkbox" id="ms5"><label for="ms5">Mi pedido ha llegado con retraso</label></div>
+                <div class="checkbox-row"><input type="checkbox" id="ms11"><label for="ms11">Recetado de por vida una comida especial</label></div>
+                <div class="checkbox-row"><input type="checkbox" id="ms6"><label for="ms6">Mi pedido ha llegado descongelado</label></div>
+                <div class="checkbox-row"><input type="checkbox" id="ms12"><label for="ms12">Recetado temporalmente una comida especial</label></div>
+              </div>
+              <div class="boxed-list-actions">
+                <button class="btn btn-primary-soft btn-small">Deseleccionar todos</button>
+              </div>
+            </div>
+          </div>
+          <p class="helper-text">Disponibles según motivos seleccionados: <strong style="color: var(--text-strong)">218</strong></p>
+        </div>
+
+        <div class="section">
+          <p class="field-label">Cantidad por agente:</p>
+          <div class="input-wrapper">
+            <input type="text" class="input-number" value="30">
+            <div class="input-spinners"><span>▲</span><span>▼</span></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <p class="section-title">Agentes:</p>
+          <div class="boxed-list">
+            <div class="boxed-list-columns">
+              <div class="checkbox-row"><input type="checkbox" id="aa1"><label for="aa1">Antonio Garcia</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="aa2"><label for="aa2">Carlos García</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="aa3" checked><label for="aa3">Cata D'Amato</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="aa4"><label for="aa4">Juan Jose Salgado</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="aa5"><label for="aa5">Marc Postils</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="aa6" checked><label for="aa6">Miguel Gimenez</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="aa7"><label for="aa7">Sergio Parra</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="aa8"><label for="aa8">Sergio Sales</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="aa9"><label for="aa9">Xavier Viguera</label></div>
+            </div>
+            <div class="boxed-list-actions">
+              <button class="btn btn-primary-soft btn-small">Deseleccionar todos</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dialog-footer">
+        <button class="btn btn-secondary"><span class="icon-x"></span> Cancelar</button>
+        <button class="btn btn-primary"><span class="icon-send"></span> Asignar</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ESTADO A2c — Todos los motivos seleccionados -->
+  <div class="state-label">
+    <span class="state-num">A2c</span> Todos los motivos seleccionados
+    <div class="state-desc">Cuando el TL marca los 12 motivos de ES, ambos counters se muestran completos en naranja (6/6 · 6/6). No necesitamos un pill especial: la propia métrica comunica el estado "todo seleccionado".</div>
+  </div>
+
+  <div class="backdrop">
+    <div class="dialog">
+      <div class="dialog-header">
+        <h3 class="dialog-title">Asignación de leads</h3>
+        <button class="dialog-close" aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="dialog-body">
+        <p class="field-label center">País:</p>
+        <div class="country-tabs">
+          <div class="country-tab active">
+            <div class="country-tab-name">España</div>
+            <div class="country-tab-count">1.524 disponibles</div>
+          </div>
+          <div class="country-tab">
+            <div class="country-tab-name">Italia</div>
+            <div class="country-tab-count">312 disponibles</div>
+          </div>
+          <div class="country-tab">
+            <div class="country-tab-name">Francia</div>
+            <div class="country-tab-count">186 disponibles</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <p class="section-title">Motivos de pausa:</p>
+          <div class="multiselect">
+            <div class="multiselect-trigger">
+              <span class="counter-row">
+                <span class="cat-counter">
+                  <span class="cat-counter-label">General</span>
+                  <span class="cat-counter-value active">6/6</span>
+                </span>
+                <span class="cat-divider">·</span>
+                <span class="cat-counter">
+                  <span class="cat-counter-label">Nutri</span>
+                  <span class="cat-counter-value active">6/6</span>
+                </span>
+              </span>
+              <span class="multiselect-chevron">▼</span>
+            </div>
+          </div>
+          <p class="helper-text">Disponibles según motivos seleccionados: <strong style="color: var(--text-strong)">1.524</strong></p>
+        </div>
+
+        <div class="section">
+          <p class="field-label">Cantidad por agente:</p>
+          <div class="input-wrapper">
+            <input type="text" class="input-number" value="50">
+            <div class="input-spinners"><span>▲</span><span>▼</span></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <p class="section-title">Agentes:</p>
+          <div class="boxed-list">
+            <div class="boxed-list-columns">
+              <div class="checkbox-row"><input type="checkbox" id="aac1" checked><label for="aac1">Antonio Garcia</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="aac2" checked><label for="aac2">Carlos García</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="aac3" checked><label for="aac3">Cata D'Amato</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="aac4" checked><label for="aac4">Juan Jose Salgado</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="aac5" checked><label for="aac5">Marc Postils</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="aac6" checked><label for="aac6">Miguel Gimenez</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="aac7" checked><label for="aac7">Sergio Parra</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="aac8" checked><label for="aac8">Sergio Sales</label></div>
+              <div class="checkbox-row"><input type="checkbox" id="aac9" checked><label for="aac9">Xavier Viguera</label></div>
+            </div>
+            <div class="boxed-list-actions">
+              <button class="btn btn-primary-soft btn-small">Deseleccionar todos</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dialog-footer">
+        <button class="btn btn-secondary"><span class="icon-x"></span> Cancelar</button>
+        <button class="btn btn-primary"><span class="icon-send"></span> Asignar</button>
+      </div>
+    </div>
+  </div>
+
+
   <!-- ESTADO 3 -->
   <div class="state-label">
     <span class="state-num">A3</span> Error de validación de cantidad
@@ -701,7 +955,7 @@
       </div>
 
       <div class="dialog-body">
-        <p class="field-label">País:</p>
+        <p class="field-label center">País:</p>
         <div class="country-tabs">
           <div class="country-tab">
             <div class="country-tab-name">España</div>
@@ -764,7 +1018,7 @@
       </div>
 
       <div class="dialog-body">
-        <p class="field-label">País:</p>
+        <p class="field-label center">País:</p>
         <div class="country-tabs">
           <div class="country-tab">
             <div class="country-tab-name">España</div>
@@ -828,7 +1082,7 @@
       </div>
 
       <div class="dialog-body">
-        <p class="field-label">País:</p>
+        <p class="field-label center">País:</p>
         <div class="country-tabs">
           <div class="country-tab">
             <div class="country-tab-name">España</div>
@@ -888,7 +1142,7 @@
       </div>
 
       <div class="dialog-body">
-        <p class="field-label">País:</p>
+        <p class="field-label center">País:</p>
         <div class="country-tabs">
           <div class="country-tab">
             <div class="country-tab-name">España</div>
@@ -939,7 +1193,7 @@
   <!-- ESTADO B1 -->
   <div class="state-label">
     <span class="state-num">B1</span> Detalle de agente español (ES)
-    <div class="state-desc">Pop-up incluye sección de motivos para que el TL/admin pueda filtrar (ej. solo asignar Nutri a este agente especializado). Cabecera muestra el país del agente y el total disponible en ese país.</div>
+    <div class="state-desc">Ejemplo: TL/admin asigna leads Nutri al agente. Counter muestra "General 0/6 · Nutri 6/6", solo el valor de Nutri en naranja.</div>
   </div>
 
   <div class="backdrop">
@@ -960,25 +1214,20 @@
 
         <div class="section">
           <p class="section-title">Motivos de pausa:</p>
-          <div class="boxed-list">
-            <div class="boxed-list-columns">
-              <p class="boxed-list-subtitle">General</p>
-              <p class="boxed-list-subtitle">Nutri</p>
-              <div class="checkbox-row"><input type="checkbox" id="bm1"><label for="bm1">El precio es demasiado alto</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="bm7" checked><label for="bm7">No le ha gustado Dogfy Diet</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="bm2"><label for="bm2">No tengo espacio en el congelador</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="bm8" checked><label for="bm8">No se come toda la ración, me sobra comida</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="bm3"><label for="bm3">Me voy de vacaciones</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="bm9" checked><label for="bm9">Le ha sentado mal Dogfy Diet (vómitos, diarreas...)</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="bm4"><label for="bm4">El contenido de mi pedido no era correcto</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="bm10" checked><label for="bm10">Quiero combinar Dogfy Diet con otra comida</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="bm5"><label for="bm5">Mi pedido ha llegado con retraso</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="bm11" checked><label for="bm11">Recetado de por vida una comida especial</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="bm6"><label for="bm6">Mi pedido ha llegado descongelado</label></div>
-              <div class="checkbox-row"><input type="checkbox" id="bm12" checked><label for="bm12">Recetado temporalmente una comida especial</label></div>
-            </div>
-            <div class="boxed-list-actions">
-              <button class="btn btn-primary-soft btn-small">Deseleccionar todos</button>
+          <div class="multiselect">
+            <div class="multiselect-trigger">
+              <span class="counter-row">
+                <span class="cat-counter">
+                  <span class="cat-counter-label">General</span>
+                  <span class="cat-counter-value">0/6</span>
+                </span>
+                <span class="cat-divider">·</span>
+                <span class="cat-counter">
+                  <span class="cat-counter-label">Nutri</span>
+                  <span class="cat-counter-value active">6/6</span>
+                </span>
+              </span>
+              <span class="multiselect-chevron">▼</span>
             </div>
           </div>
           <p class="helper-text">Disponibles según motivos seleccionados: <strong style="color: var(--text-strong)">218</strong></p>
