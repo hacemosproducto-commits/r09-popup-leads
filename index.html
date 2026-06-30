@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>R-09 · Pop-up de asignación de leads — Mid-fi v6 (counter por categoría)</title>
+<title>R-09 · Pop-up de asignación de leads — Mid-fi v7 (lista plana + motivos en IT/FR)</title>
 <style>
   :root {
     --primary: #F47C5D;
@@ -380,7 +380,7 @@
     border: 1px solid var(--border-strong);
     border-radius: var(--radius-md);
     font-size: 15px;
-    color: var(--text-subtle);
+    color: var(--text-strong);
     background: white;
     cursor: pointer;
     display: flex;
@@ -388,6 +388,9 @@
     justify-content: space-between;
     font-family: var(--font);
     min-height: 44px;
+  }
+  .multiselect-trigger.placeholder {
+    color: var(--text-subtle);
   }
   .multiselect-chevron {
     position: absolute;
@@ -405,6 +408,11 @@
     background: white;
     box-shadow: 0 8px 16px -4px rgba(0,0,0,0.10), 0 4px 8px -4px rgba(0,0,0,0.06);
     padding: 14px 16px 12px;
+  }
+  .multiselect-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
   }
 
   /* === Counter por categoría dentro del MultiSelect === */
@@ -556,7 +564,7 @@
 <body>
 
 <div class="page-hint">
-  <strong>R-09 — Pop-up de asignación de leads · Mid-fi v6.</strong> Iteración: los motivos seleccionados se muestran como counter por categoría dentro del campo (<em>General 0/6 · Nutri 3/6</em>). El naranja se aplica solo a los valores activos (&gt;0). Reduce altura del pop-up sin pills.
+  <strong>R-09 — Pop-up de asignación de leads · Mid-fi v7.</strong> Iteración tras revisión con IT: (1) panel del MultiSelect en lista plana, sin columnas General/Nutri. (2) Trigger con formato "X / N motivos seleccionados" o placeholder cuando vacío. (3) IT y FR pasan a tener sección de motivos (con los 6 motivos estándar).
 </div>
 
 <div class="stage">
@@ -602,18 +610,8 @@
         <div class="section">
           <p class="section-title">Motivos de pausa:</p>
           <div class="multiselect">
-            <div class="multiselect-trigger">
-              <span class="counter-row">
-                <span class="cat-counter">
-                  <span class="cat-counter-label">General</span>
-                  <span class="cat-counter-value">0/6</span>
-                </span>
-                <span class="cat-divider">·</span>
-                <span class="cat-counter">
-                  <span class="cat-counter-label">Nutri</span>
-                  <span class="cat-counter-value">0/6</span>
-                </span>
-              </span>
+            <div class="multiselect-trigger placeholder">
+              <span>Selecciona los motivos de pausa</span>
               <span class="multiselect-chevron">▼</span>
             </div>
           </div>
@@ -690,17 +688,7 @@
           <p class="section-title">Motivos de pausa:</p>
           <div class="multiselect">
             <div class="multiselect-trigger">
-              <span class="counter-row">
-                <span class="cat-counter">
-                  <span class="cat-counter-label">General</span>
-                  <span class="cat-counter-value">0/6</span>
-                </span>
-                <span class="cat-divider">·</span>
-                <span class="cat-counter">
-                  <span class="cat-counter-label">Nutri</span>
-                  <span class="cat-counter-value active">3/6</span>
-                </span>
-              </span>
+              <span>3 / 12 motivos seleccionados</span>
               <span class="multiselect-chevron">▼</span>
             </div>
           </div>
@@ -778,35 +766,23 @@
           <p class="section-title">Motivos de pausa:</p>
           <div class="multiselect">
             <div class="multiselect-trigger" style="border-color: var(--primary); box-shadow: 0 0 0 3px rgba(244, 124, 93, 0.15);">
-              <span class="counter-row">
-                <span class="cat-counter">
-                  <span class="cat-counter-label">General</span>
-                  <span class="cat-counter-value">0/6</span>
-                </span>
-                <span class="cat-divider">·</span>
-                <span class="cat-counter">
-                  <span class="cat-counter-label">Nutri</span>
-                  <span class="cat-counter-value active">3/6</span>
-                </span>
-              </span>
+              <span>3 / 12 motivos seleccionados</span>
               <span class="multiselect-chevron" style="transform: translateY(-50%) rotate(180deg);">▼</span>
             </div>
             <div class="multiselect-panel">
-              <div class="boxed-list-columns">
-                <p class="boxed-list-subtitle">General</p>
-                <p class="boxed-list-subtitle">Nutri</p>
+              <div class="multiselect-list">
                 <div class="checkbox-row"><input type="checkbox" id="ms1"><label for="ms1">El precio es demasiado alto</label></div>
-                <div class="checkbox-row"><input type="checkbox" id="ms7" checked><label for="ms7">No le ha gustado Dogfy Diet</label></div>
                 <div class="checkbox-row"><input type="checkbox" id="ms2"><label for="ms2">No tengo espacio en el congelador</label></div>
-                <div class="checkbox-row"><input type="checkbox" id="ms8" checked><label for="ms8">No se come toda la ración, me sobra comida</label></div>
                 <div class="checkbox-row"><input type="checkbox" id="ms3"><label for="ms3">Me voy de vacaciones</label></div>
-                <div class="checkbox-row"><input type="checkbox" id="ms9" checked><label for="ms9">Le ha sentado mal Dogfy Diet (vómitos, diarreas...)</label></div>
-                <div class="checkbox-row"><input type="checkbox" id="ms4"><label for="ms4">El contenido de mi pedido no era correcto</label></div>
-                <div class="checkbox-row"><input type="checkbox" id="ms10"><label for="ms10">Quiero combinar Dogfy Diet con otra comida</label></div>
+                <div class="checkbox-row"><input type="checkbox" id="ms4"><label for="ms4">El contenido de mi pedido no era correcto (faltan bolsas, gramaje erróneo...)</label></div>
                 <div class="checkbox-row"><input type="checkbox" id="ms5"><label for="ms5">Mi pedido ha llegado con retraso</label></div>
-                <div class="checkbox-row"><input type="checkbox" id="ms11"><label for="ms11">Recetado de por vida una comida especial</label></div>
                 <div class="checkbox-row"><input type="checkbox" id="ms6"><label for="ms6">Mi pedido ha llegado descongelado</label></div>
-                <div class="checkbox-row"><input type="checkbox" id="ms12"><label for="ms12">Recetado temporalmente una comida especial</label></div>
+                <div class="checkbox-row"><input type="checkbox" id="ms7" checked><label for="ms7">No le ha gustado Dogfy Diet</label></div>
+                <div class="checkbox-row"><input type="checkbox" id="ms8" checked><label for="ms8">No se come toda la ración, me sobra comida</label></div>
+                <div class="checkbox-row"><input type="checkbox" id="ms9" checked><label for="ms9">Le ha sentado mal Dogfy Diet (vómitos, diarreas...)</label></div>
+                <div class="checkbox-row"><input type="checkbox" id="ms10"><label for="ms10">Quiero combinar Dogfy Diet con otra comida</label></div>
+                <div class="checkbox-row"><input type="checkbox" id="ms11"><label for="ms11">El veterinario le ha recetado de por vida una comida especial</label></div>
+                <div class="checkbox-row"><input type="checkbox" id="ms12"><label for="ms12">El veterinario le ha recetado temporalmente una comida especial</label></div>
               </div>
               <div class="boxed-list-actions">
                 <button class="btn btn-primary-soft btn-small">Deseleccionar todos</button>
@@ -856,7 +832,7 @@
   <!-- ESTADO A2c — Todos los motivos seleccionados -->
   <div class="state-label">
     <span class="state-num">A2c</span> Todos los motivos seleccionados
-    <div class="state-desc">Cuando el TL marca los 12 motivos de ES, ambos counters se muestran completos en naranja (6/6 · 6/6). No necesitamos un pill especial: la propia métrica comunica el estado "todo seleccionado".</div>
+    <div class="state-desc">Cuando el TL marca los 12 motivos de ES, el trigger muestra "12 / 12 motivos seleccionados".</div>
   </div>
 
   <div class="backdrop">
@@ -887,17 +863,7 @@
           <p class="section-title">Motivos de pausa:</p>
           <div class="multiselect">
             <div class="multiselect-trigger">
-              <span class="counter-row">
-                <span class="cat-counter">
-                  <span class="cat-counter-label">General</span>
-                  <span class="cat-counter-value active">6/6</span>
-                </span>
-                <span class="cat-divider">·</span>
-                <span class="cat-counter">
-                  <span class="cat-counter-label">Nutri</span>
-                  <span class="cat-counter-value active">6/6</span>
-                </span>
-              </span>
+              <span>12 / 12 motivos seleccionados</span>
               <span class="multiselect-chevron">▼</span>
             </div>
           </div>
@@ -972,6 +938,17 @@
         </div>
 
         <div class="section">
+          <p class="section-title">Motivos de pausa:</p>
+          <div class="multiselect">
+            <div class="multiselect-trigger">
+              <span>2 / 6 motivos seleccionados</span>
+              <span class="multiselect-chevron">▼</span>
+            </div>
+          </div>
+          <p class="helper-text">Disponibles según motivos seleccionados: <strong style="color: var(--text-strong)">128</strong></p>
+        </div>
+
+        <div class="section">
           <p class="field-label">Cantidad por agente:</p>
           <div class="input-wrapper">
             <input type="text" class="input-number error" value="120">
@@ -1006,8 +983,8 @@
 
   <!-- ESTADO 4 -->
   <div class="state-label">
-    <span class="state-num">A4</span> País sin sección de motivos (Italia)
-    <div class="state-desc">IT/FR: no aparece sección de motivos, solo agentes.</div>
+    <span class="state-num">A4</span> Italia con motivos y agentes seleccionados (válido)
+    <div class="state-desc">IT/FR siguen el mismo patrón que ES, con sus 6 motivos generales.</div>
   </div>
 
   <div class="backdrop">
@@ -1032,6 +1009,17 @@
             <div class="country-tab-name">Francia</div>
             <div class="country-tab-count">186 disponibles</div>
           </div>
+        </div>
+
+        <div class="section">
+          <p class="section-title">Motivos de pausa:</p>
+          <div class="multiselect">
+            <div class="multiselect-trigger">
+              <span>4 / 6 motivos seleccionados</span>
+              <span class="multiselect-chevron">▼</span>
+            </div>
+          </div>
+          <p class="helper-text">Disponibles según motivos seleccionados: <strong style="color: var(--text-strong)">240</strong></p>
         </div>
 
         <div class="section">
@@ -1099,6 +1087,16 @@
         </div>
 
         <div class="section">
+          <p class="section-title">Motivos de pausa:</p>
+          <div class="multiselect">
+            <div class="multiselect-trigger placeholder" style="background:#F9FAFB; cursor: not-allowed;">
+              <span>Selecciona los motivos de pausa</span>
+              <span class="multiselect-chevron">▼</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
           <p class="field-label">Cantidad por agente:</p>
           <div class="input-wrapper">
             <input type="text" class="input-number" value="0" disabled style="background:#F9FAFB; color: var(--text-subtle); cursor: not-allowed;">
@@ -1155,6 +1153,16 @@
           <div class="country-tab active">
             <div class="country-tab-name">Francia</div>
             <div class="country-tab-count">186 disponibles</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <p class="section-title">Motivos de pausa:</p>
+          <div class="multiselect">
+            <div class="multiselect-trigger placeholder">
+              <span>Selecciona los motivos de pausa</span>
+              <span class="multiselect-chevron">▼</span>
+            </div>
           </div>
         </div>
 
@@ -1216,17 +1224,7 @@
           <p class="section-title">Motivos de pausa:</p>
           <div class="multiselect">
             <div class="multiselect-trigger">
-              <span class="counter-row">
-                <span class="cat-counter">
-                  <span class="cat-counter-label">General</span>
-                  <span class="cat-counter-value">0/6</span>
-                </span>
-                <span class="cat-divider">·</span>
-                <span class="cat-counter">
-                  <span class="cat-counter-label">Nutri</span>
-                  <span class="cat-counter-value active">6/6</span>
-                </span>
-              </span>
+              <span>6 / 12 motivos seleccionados</span>
               <span class="multiselect-chevron">▼</span>
             </div>
           </div>
@@ -1258,7 +1256,6 @@
 
   <div class="backdrop">
     <div class="dialog">
-      <div class="dialog dialog-narrow">
         <div class="dialog-header">
           <h3 class="dialog-title">Asignar leads</h3>
           <button class="dialog-close" aria-label="Cerrar">✕</button>
@@ -1274,6 +1271,17 @@
           </div>
 
           <div class="section">
+            <p class="section-title">Motivos de pausa:</p>
+            <div class="multiselect">
+              <div class="multiselect-trigger">
+                <span>3 / 6 motivos seleccionados</span>
+                <span class="multiselect-chevron">▼</span>
+              </div>
+            </div>
+            <p class="helper-text">Disponibles según motivos seleccionados: <strong style="color: var(--text-strong)">142</strong></p>
+          </div>
+
+          <div class="section">
             <p class="field-label">Cantidad de leads:</p>
             <div class="input-wrapper">
               <input type="text" class="input-number" value="10">
@@ -1286,7 +1294,6 @@
           <button class="btn btn-secondary"><span class="icon-x"></span> Cancelar</button>
           <button class="btn btn-primary"><span class="icon-send"></span> Asignar</button>
         </div>
-      </div>
     </div>
   </div>
 
